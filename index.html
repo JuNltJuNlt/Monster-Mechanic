@@ -219,10 +219,11 @@
             font-weight: 400;
             font-size: 1.05rem;
             color: #2d2d2d;
-            line-height: 1.7;
+            line-height: 2;
             overflow-y: auto;
             flex: 1;
             word-break: break-word;
+            white-space: pre-line;
         }
 
         @media (max-width: 650px) {
@@ -297,9 +298,7 @@
         <div class="panel-header">
             <button class="close-btn" id="closePanelBtn" aria-label="关闭">×</button>
         </div>
-        <div class="panel-content" id="panelContent">
-            文本
-        </div>
+        <div class="panel-content" id="panelContent"></div>
     </div>
 
     <script>
@@ -332,9 +331,19 @@
             const closePanelBtn = document.getElementById('closePanelBtn');
             const panelContent = document.getElementById('panelContent');
 
+            const previewText = `本网站仅对存在【特殊机制】（元素护盾、特殊阶段）的怪物作解析，对无特殊机制（如丘丘人、盗宝团成员）不作解析。
+
+本网站所有内容都为正式服已上线内容，不会有任何未上线内容。
+
+所有机制均为本人在深入了解怪物机制后重写的中译中，在确保完整的基础上做到简单易懂，此外，对深渊特化、深渊能否入场秒杀作了强调。
+
+另外，危战不是本人强项，并且b站上有危战图做的很好的up主，所以暂时没有总结危战机制的计划。
+
+本网站没有任何盈利内容。个人对本网站有不成熟的外号"玉米杯数据库"，希望在原魔上起到和玉衡杯相同的作用，但也想做出一定的差异。`;
+
             if (previewBtn && slidePanel && closePanelBtn) {
                 previewBtn.addEventListener('click', function() {
-                    panelContent.innerHTML = '本网站仅对存在【特殊机制】（元素护盾、特殊阶段）的怪物作解析，对无特殊机制（如丘丘人、盗宝团成员）不作解析。<br>本网站所有内容都为正式服已上线内容，不会有任何未上线内容。<br>所有机制均为本人在深入了解怪物机制后重写的中译中，在确保完整的基础上做到简单易懂，此外，对深渊特化、深渊能否入场秒杀作了强调。<br>另外，危战不是本人强项，并且b站上有危战图做的很好的up主，所以暂时没有总结危战机制的计划。<br>本网站没有任何盈利内容。个人对本网站有不成熟的外号“玉米杯数据库”，希望在原魔上起到和玉衡杯相同的作用，但也想做出一定的差异。';
+                    panelContent.textContent = previewText;
                     slidePanel.classList.add('active');
                 });
 
@@ -352,7 +361,7 @@
             const enterBtn = document.getElementById('enterBtn');
             if (enterBtn) {
                 enterBtn.addEventListener('click', function() {
-                    alert('进入主站功能暂未配置链接');
+                    window.location.href = 'https://junltjunlt.github.io/main-station/';
                 });
             }
         })();
