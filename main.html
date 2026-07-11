@@ -212,7 +212,7 @@
         .right-panel {
             width: 20%;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
         }
 
         .detail-panel {
@@ -242,6 +242,7 @@
             align-items: center;
             padding: 0.8rem 1rem;
             border-bottom: 1px solid #eeeeee;
+            flex-shrink: 0;
         }
 
         .detail-title {
@@ -311,6 +312,7 @@
                 bottom: 0;
                 pointer-events: none;
                 z-index: 100;
+                overflow: visible;
             }
             .detail-panel {
                 position: fixed;
@@ -504,8 +506,9 @@
                 });
 
                 const visibleCards = document.querySelectorAll('.monster-card:not(.hidden)');
+                const existingEmpty = document.querySelector('.monster-empty');
+                
                 if (visibleCards.length === 0 && activeFilterCount > 0) {
-                    const existingEmpty = document.querySelector('.monster-empty');
                     if (!existingEmpty) {
                         const emptyMsg = document.createElement('div');
                         emptyMsg.className = 'monster-empty';
@@ -513,7 +516,6 @@
                         monsterGrid.appendChild(emptyMsg);
                     }
                 } else {
-                    const existingEmpty = document.querySelector('.monster-empty');
                     if (existingEmpty) {
                         existingEmpty.remove();
                     }
