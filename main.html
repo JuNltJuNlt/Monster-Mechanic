@@ -80,7 +80,7 @@
 
         .filter-options {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 0.4rem;
         }
 
@@ -88,11 +88,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.4rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .version-row:last-child {
-            margin-bottom: 0;
         }
 
         .filter-tag {
@@ -372,21 +367,25 @@
                 <div class="filter-group">
                     <span class="filter-label">标签1：怪物类型</span>
                     <div class="filter-options" id="tag1Options">
-                        <span class="filter-tag" data-tag="tag1" data-value="普通怪">普通怪</span>
-                        <span class="filter-tag" data-tag="tag1" data-value="地方传奇/历经百战">地方传奇/历经百战</span>
+                        <div class="version-row">
+                            <span class="filter-tag" data-tag="tag1" data-value="普通怪">普通怪</span>
+                            <span class="filter-tag" data-tag="tag1" data-value="地方传奇/历经百战">地方传奇/历经百战</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="filter-group">
                     <span class="filter-label">标签2：所属势力</span>
                     <div class="filter-options" id="tag2Options">
-                        <span class="filter-tag" data-tag="tag2" data-value="元素生命">元素生命</span>
-                        <span class="filter-tag" data-tag="tag2" data-value="丘丘部族">丘丘部族</span>
-                        <span class="filter-tag" data-tag="tag2" data-value="深渊">深渊</span>
-                        <span class="filter-tag" data-tag="tag2" data-value="愚人众">愚人众</span>
-                        <span class="filter-tag" data-tag="tag2" data-value="其它人类势力">其它人类势力</span>
-                        <span class="filter-tag" data-tag="tag2" data-value="自律机关">自律机关</span>
-                        <span class="filter-tag" data-tag="tag2" data-value="异种魔兽">异种魔兽</span>
+                        <div class="version-row">
+                            <span class="filter-tag" data-tag="tag2" data-value="元素生命">元素生命</span>
+                            <span class="filter-tag" data-tag="tag2" data-value="丘丘部族">丘丘部族</span>
+                            <span class="filter-tag" data-tag="tag2" data-value="深渊">深渊</span>
+                            <span class="filter-tag" data-tag="tag2" data-value="愚人众">愚人众</span>
+                            <span class="filter-tag" data-tag="tag2" data-value="其它人类势力">其它人类势力</span>
+                            <span class="filter-tag" data-tag="tag2" data-value="自律机关">自律机关</span>
+                            <span class="filter-tag" data-tag="tag2" data-value="异种魔兽">异种魔兽</span>
+                        </div>
                     </div>
                 </div>
 
