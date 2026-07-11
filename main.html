@@ -167,6 +167,11 @@
             text-align: center;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            display: block;
+        }
+
+        .monster-card.hidden {
+            display: none;
         }
 
         .monster-card:hover {
@@ -215,6 +220,7 @@
             top: 0;
             left: 0;
             width: 100%;
+            height: 100%;
             background-color: #ffffff;
             border: 1px solid #d0d0d0;
             border-radius: 10px;
@@ -224,7 +230,6 @@
             transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            max-height: 70vh;
         }
 
         .detail-panel.active {
@@ -313,6 +318,7 @@
                 bottom: 0;
                 left: 0;
                 width: 100%;
+                height: auto;
                 max-height: 55vh;
                 border-radius: 14px 14px 0 0;
                 transform: translateY(100%);
@@ -377,6 +383,7 @@
                         <span class="filter-tag" data-tag="tag3" data-value="3.0">3.0</span>
                         <span class="filter-tag" data-tag="tag3" data-value="4.0">4.0</span>
                         <span class="filter-tag" data-tag="tag3" data-value="5.0">5.0</span>
+                        <span class="filter-tag" data-tag="tag3" data-value="6.0">6.0</span>
                     </div>
                 </div>
 
@@ -414,27 +421,27 @@
             const detailCloseBtn = document.getElementById('detailCloseBtn');
 
             let selectedFilters = {
-                tag1: null,
-                tag2: null,
-                tag3: null
+                tag1: [],
+                tag2: [],
+                tag3: []
             };
 
             let currentSelectedMonster = null;
 
             const monsters = [
                 {
-                    name: '飘浮灵',
+                    name: '深渊法师',
                     tag1: '普通怪',
-                    tag2: '元素生命',
-                    tag3: '2.1',
-                    detail: 'PFL'
+                    tag2: '深渊',
+                    tag3: '1.0',
+                    detail: '深渊法师机制详情'
                 },
                 {
-                    name: '史莱姆',
+                    name: '霜夜灵嗣',
                     tag1: '普通怪',
                     tag2: '元素生命',
-                    tag3: '1.0',
-                    detail: 'SLM'
+                    tag3: '6.0',
+                    detail: '霜夜灵嗣机制详情'
                 }
             ];
 
@@ -446,13 +453,8 @@
                 });
             }
 
-            function renderMonsters(monsterList) {
-                if (monsterList.length === 0) {
-                    monsterGrid.innerHTML = '<div class="monster-empty">没有符合筛选条件的怪物</div>';
-                    return;
-                }
-
-                const sorted = sortByVersion([...monsterList]);
+            function renderAllMonsters() {
+                const sorted = sortByVersion([...monsters]);
                 monsterGrid.innerHTML = sorted.map(monster => `
                     <div class="monster-card${currentSelectedMonster && currentSelectedMonster.name === monster.name ? ' selected' : ''}" data-name="${monster.name}">
                         <div>${monster.name}</div>
@@ -470,6 +472,52 @@
                         selectMonster(name);
                     });
                 });
+
+                applyVisibilityFilter();
+            }
+
+            function applyVisibilityFilter() {
+                const activeFilterCount = selectedFilters.tag1.length + 
+                                         selectedFilters.tag2.length + 
+                                         selectedFilters.tag3.length;
+
+                document.querySelectorAll('.monster-card').forEach(card => {
+                    const name = card.dataset.name;
+                    const monster = monsters.find(m => m.name === name);
+                    if (!monster) return;
+
+                    if (activeFilterCount === 0) {
+                        card.classList.remove('hidden');
+                        return;
+                    }
+
+                    let visible = true;
+                    if (selectedFilters.tag1.length > 0 && !selectedFilters.tag1.includes(monster.tag1)) visible = false;
+                    if (selectedFilters.tag2.length > 0 && !selectedFilters.tag2.includes(monster.tag2)) visible = false;
+                    if (selectedFilters.tag3.length > 0 && !selectedFilters.tag3.includes(monster.tag3)) visible = false;
+
+                    if (visible) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                const visibleCards = document.querySelectorAll('.monster-card:not(.hidden)');
+                if (visibleCards.length === 0 && activeFilterCount > 0) {
+                    const existingEmpty = document.querySelector('.monster-empty');
+                    if (!existingEmpty) {
+                        const emptyMsg = document.createElement('div');
+                        emptyMsg.className = 'monster-empty';
+                        emptyMsg.textContent = '没有符合筛选条件的怪物';
+                        monsterGrid.appendChild(emptyMsg);
+                    }
+                } else {
+                    const existingEmpty = document.querySelector('.monster-empty');
+                    if (existingEmpty) {
+                        existingEmpty.remove();
+                    }
+                }
             }
 
             function selectMonster(name) {
@@ -523,62 +571,45 @@
 
                 const tagGroup = tag.dataset.tag;
                 const tagValue = tag.dataset.value;
-                const parentGroup = tag.parentElement;
 
-                if (selectedFilters[tagGroup] === tagValue) {
-                    selectedFilters[tagGroup] = null;
-                    parentGroup.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                if (selectedFilters[tagGroup].includes(tagValue)) {
+                    selectedFilters[tagGroup] = selectedFilters[tagGroup].filter(v => v !== tagValue);
+                    tag.classList.remove('active');
                 } else {
-                    parentGroup.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                    selectedFilters[tagGroup].push(tagValue);
                     tag.classList.add('active');
-                    selectedFilters[tagGroup] = tagValue;
-                }
-            }
-
-            function applyFilter() {
-                const activeFilterCount = (selectedFilters.tag1 ? 1 : 0) + 
-                                         (selectedFilters.tag2 ? 1 : 0) + 
-                                         (selectedFilters.tag3 ? 1 : 0);
-
-                if (activeFilterCount === 0) {
-                    renderMonsters(monsters);
-                    return;
                 }
 
-                const filtered = monsters.filter(monster => {
-                    if (selectedFilters.tag1 && monster.tag1 !== selectedFilters.tag1) return false;
-                    if (selectedFilters.tag2 && monster.tag2 !== selectedFilters.tag2) return false;
-                    if (selectedFilters.tag3 && monster.tag3 !== selectedFilters.tag3) return false;
-                    return true;
-                });
-
-                renderMonsters(filtered);
+                applyVisibilityFilter();
             }
 
             function clearAllFilters() {
                 selectedFilters = {
-                    tag1: null,
-                    tag2: null,
-                    tag3: null
+                    tag1: [],
+                    tag2: [],
+                    tag3: []
                 };
 
                 document.querySelectorAll('.filter-tag').forEach(tag => {
                     tag.classList.remove('active');
                 });
 
-                renderMonsters(monsters);
+                applyVisibilityFilter();
             }
 
             tag1Options.addEventListener('click', handleTagClick);
             tag2Options.addEventListener('click', handleTagClick);
             tag3Options.addEventListener('click', handleTagClick);
 
-            applyFilterBtn.addEventListener('click', applyFilter);
             clearFilterBtn.addEventListener('click', clearAllFilters);
+
+            applyFilterBtn.addEventListener('click', function() {
+                applyVisibilityFilter();
+            });
 
             detailCloseBtn.addEventListener('click', closeDetailPanel);
 
-            renderMonsters(monsters);
+            renderAllMonsters();
         })();
     </script>
 </body>
